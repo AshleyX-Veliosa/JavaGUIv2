@@ -138,7 +138,25 @@ public class DesignFrame extends javax.swing.JFrame {
                 }
             }
         });
-
+        //when update show data from sql to table and set data to table
+        jButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore", "root", "");
+                    String sql = "SELECT * FROM book";
+                    PreparedStatement statement = conn.prepareStatement(sql);
+                    ResultSet result = statement.executeQuery();
+                    DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+                    model.setRowCount(0);
+                    while (result.next()) {
+                        model.addRow(new Object[]{result.getString("book_id"), result.getString("book_name"), result.getString("edition"), result.getString("price"), result.getString("quality")});
+                    }
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(204, 204, 204));
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
@@ -205,31 +223,15 @@ public class DesignFrame extends javax.swing.JFrame {
             }
         });
 
-        //show data from sql
-        jButton4.addActionListener(new ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bookstore", "root", "");
-                    String sql = "SELECT * FROM book";
-                    Statement statement = conn.createStatement();
-                    ResultSet result = statement.executeQuery(sql);
-                    DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-                    model.setRowCount(0);
-                    while (result.next()) {
-                        Object[] row = new Object[5];
-                        row[0] = result.getInt("book_id");
-                        row[1] = result.getString("book_name");
-                        row[2] = result.getString("edition");
-                        row[3] = result.getString("price");
-                        row[4] = result.getString("quality");
-                        model.addRow(row);
-                    }
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        //show data from sql to table and set data to table
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        new Object[][]{
+        },
+        new String[]{
+        "Book ID", "Book Name", "Edition", "Price", "Quality"
+        }
+        ));
+
         jScrollPane2.setViewportView(jTable2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
